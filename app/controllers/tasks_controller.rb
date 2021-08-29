@@ -5,7 +5,10 @@ class TasksController < ApplicationController
   def index
     redis_namespace = "session"
     # セッションID(cookieに保存)
-    cookie_key = cookies[Rails.application.config.session_options[:key]] || Rails.application.config.session_options[:key]
+    if !cookies[Rails.application.config.session_options[:key]]
+      cookies[Rails.application.config.session_options[:key]] = Rails.application.config.session_options[:key]
+    end
+    cookie_key = cookies[Rails.application.config.session_options[:key]]
     session_key = "#{redis_namespace}:#{cookie_key}"
     # redis接続
     redis = Redis.new(host:"localhost",port: 6379)
